@@ -1,11 +1,8 @@
 #include <stdio.h>
+#include "./snake.c"
 
 int main(){
-    #define x 10
 
-    // scanf("%d", &x);
-
-    printf("Value = %d\n",x);
-
+    snake_game();
     return 0;
 }

@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "stdio.h": "c",
-        "calculadora.h": "c"
+        "calculadora.h": "c",
+        "ncurses.h": "c"
     }
 }

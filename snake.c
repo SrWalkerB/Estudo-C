@@ -71,7 +71,27 @@ void draw(){
                     if(snake_body[indexSnake] == 1){
                         
                         if(direction_y == 1){
-                        printw("0");
+                            if(indexWidth == posX && indexHeight == posY-(indexSnake+1)){
+                                printw("|");
+                            }
+                        }
+
+                        if(direction_y == -1){
+                            if(indexWidth == posX && indexHeight == posY+(indexSnake+1)){
+                                printw("|");
+                            }
+                        }
+
+                        if(direction_x == 1){
+                            if(indexWidth == posX-(indexSnake+1) && indexHeight == posY){
+                                printw("-");
+                            }
+                        }
+
+                         if(direction_x == -1){
+                            if(indexWidth == posX+(indexSnake+1) && indexHeight == posY){
+                                printw("-");
+                            }
                         }
                     }
                 }

@@ -113,9 +113,10 @@ void draw(){
 
                     int speed = score % 2;
 
-                    if(speed == 1){
+                    if(speed == 1 && DELAY >= 200000){
                         DELAY = DELAY - 100000;
                     } 
+
                     renderSyrup();
                 }
             }

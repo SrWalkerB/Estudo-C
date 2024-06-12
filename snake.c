@@ -3,20 +3,40 @@
 #include <string.h>
 #include <unistd.h>
 #include <ncurses.h>
+#include <ctype.h>
 
 //Dependecias: libncurses5-dev libncursesw5-dev;
 
-#define DELAY 800000
+#define DELAY 500000
 int width = 30;
 int height = 30;
-int posX = 1;
-int posY = 2;
+int posX = 0;
+int posY = 0;
+int direction_x = 0;
+int direction_y = 1;
 char key[] = "";
 int game_running = 1;
+int game_closing = 0;
 
+void close_game(){
+    printw("colidiu");
+    game_running = 0;
+}
+
+void check_game_over(){
+ if(posY == height || posY == -1){
+        close_game();
+    } 
+
+    if(posX == width || posX == 0){
+        close_game();
+    }
+
+}
 
 void draw(){
-    system("clear");
+    // system("clear")
+    clear();
 
     for(int indexHeight = 0; indexHeight < height; indexHeight++){
         for(int indexWidth = 0; indexWidth < width; indexWidth++){
@@ -25,80 +45,109 @@ void draw(){
             //indexWidth == 0 ; Se for o primeiro elemento signfica que é a primeira borda;
             //indexWidth == height-1; Se for o penultimo elemento signfica que é a ultima;
 
+
             if(indexHeight == 0 || indexHeight == width-1 || indexWidth == 0 || indexWidth == height-1){
-                printf("#"); 
+                printw("#");
+
             } else {
-                // printf("indexHeight = %i; posY=%i\n", indexHeight, posY);
+                // printw("indexHeight = %i; posY=%i\n", indexHeight, posY);
                 if(indexWidth == posX && indexHeight == posY){
-                    printf("[]");
+                    printw("[]");
                 } else {
-                    printf(" ");
+                    printw(" ");                    
                 }
             }
         }
 
         //Pra cada caracter criado de altura vamos quebrar a linha
-        printf("\n"); 
+        printw("\n"); 
     }
 }
 
 void input(){
-    char input_key[80];
-    getstr(input_key);
+    int key;
 
-    printw("%s", input_key);
-    // if(input_key == "q"){
-    //     printw("1");
-    // }
-    // if(input_key == "q"){
-    //     game_running = 0;
-    // }
+    key = getch();
 
-    // if(input_key == W_OK(1)){
-    //     printw("opa");
-    // }
+    if(key != ERR){
+        key = tolower(key);
 
-    // printf("value=%s\n", input_key);
+        switch (key)
+        {
+        case 'w':
+            direction_y = -1;
+            direction_x = 0;
+            break;
 
-    // if(strcmp(input_key, "w") == 0){
-    //     posY = posY-1;
-    // }
+        case 's':
+            direction_y = 1;
+            direction_x = 0;
+            break;
 
-    // if(strcmp(input_key, "s") == 0){
-    //     posY = posY+1;
-    // }
+        case 'd':
+            direction_x = 1;
+            direction_y = 0;
+            break;
 
-    // if(strcmp(input_key, "d") == 0){
-    //     posX = posX+1;
-    // }
+        case 'a':
+            direction_x = -1;
+            direction_y = 0;
+            break;
 
-    // if(strcmp(input_key, "a") == 0){
-    //     posX = posX-1;
-    // }
+         case 'p':
+            game_running = 0;
+            break;
+        }
+    }
 }
 
 int snake_move_auto(){
-    // sleep(0.01);
-    posY = posY+1;
-    posX = posX+1;
+    if(direction_y == 1){
+        posY = posY+1;
+        direction_x = 0;
+    }
+
+    if(direction_y == -1){
+        posY = posY-1;
+        direction_x = 0;
+    }
+
+    if(direction_x == 1){
+        posX = posX + 1;
+        direction_y = 0;
+    }
+
+    if(direction_x == -1){
+        posX = posX - 1;
+        direction_y = 0;
+    }
+
+    printw("posX = %i, posY = %i", posX, posY);
 }
 
 int snake_game(){
-    // initscr();	
+    initscr();	     // Inicia a lib n curses;
+    cbreak();
+    noecho();        // Desativa caracteres digitados;
+    curs_set(FALSE); // Oculta Cursor
+    nodelay(stdscr, TRUE);
 
-    // getch();  
-    // raw();				
-    // keypad(stdscr, TRUE);		
-    // noecho();		
+    posX = width / 2;
+    posY = height / 2;
 
     while (game_running)
     {
         draw();
-        // input();
+        check_game_over();
+        input();
         snake_move_auto();
+        refresh();
         usleep(DELAY);
     }
+
+
+    // getch();  //responsivevel por fechar o jogo ao clicar em CTRL+C
     
-    // endwin();
+    endwin();
     return 0;
 }

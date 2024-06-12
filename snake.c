@@ -187,6 +187,7 @@ int snake_move_auto(){
     printw("posX = %i, posY = %i\n", posX, posY);
     printw("posX_fruit = %i, posY_fruit = %i\n", posX_fruit, posY_fruit);
     printw("score = %i\n", score);
+    printw("DELAY = %i\n", DELAY);
 
 }
 

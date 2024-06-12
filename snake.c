@@ -7,7 +7,7 @@
 
 //Dependecias: libncurses5-dev libncursesw5-dev;
 
-#define DELAY 500000
+#define DELAY 1000000
 int width = 30;
 int height = 30;
 int posX = 0;
@@ -18,8 +18,12 @@ char key[] = "";
 int game_running = 1;
 int game_closing = 0;
 
+int posX_fruit = 0;
+int posY_fruit = 0;
+int score = 0;
+int snake_body[10] = {};
+
 void close_game(){
-    printw("colidiu");
     game_running = 0;
 }
 
@@ -31,11 +35,24 @@ void check_game_over(){
     if(posX == width || posX == 0){
         close_game();
     }
+}
 
+int randomInt(int min, int max){
+    return rand() % max + min;
+}
+
+int renderSyrup(){
+    int length = sizeof(snake_body) / sizeof(snake_body[0]); 
+    // printw("size = %i\n",length);
+
+    // for(int x = 0; x < length; x++){
+    //     if(snake_body[x] == 1){
+    //         printw("body = %i\n", snake_body[x]);
+    //     }
+    // }
 }
 
 void draw(){
-    // system("clear")
     clear();
 
     for(int indexHeight = 0; indexHeight < height; indexHeight++){
@@ -45,16 +62,36 @@ void draw(){
             //indexWidth == 0 ; Se for o primeiro elemento signfica que é a primeira borda;
             //indexWidth == height-1; Se for o penultimo elemento signfica que é a ultima;
 
-
             if(indexHeight == 0 || indexHeight == width-1 || indexWidth == 0 || indexWidth == height-1){
                 printw("#");
-
             } else {
-                // printw("indexHeight = %i; posY=%i\n", indexHeight, posY);
+                 int lengthSnakeBody = sizeof(snake_body) / sizeof(snake_body[0]);
+
+                for(int indexSnake = 0; indexSnake < lengthSnakeBody; indexSnake++){
+                    if(snake_body[indexSnake] == 1){
+                        
+                        if(direction_y == 1){
+                        printw("0");
+                        }
+                    }
+                }
+
                 if(indexWidth == posX && indexHeight == posY){
-                    printw("[]");
+                    printw("0");
                 } else {
                     printw(" ");                    
+                }
+
+                if(indexWidth == posX_fruit && indexHeight == posY_fruit){
+                    printw("*");
+                }
+
+                if(posX_fruit == posX-1 && posY_fruit == posY){
+                    posX_fruit = randomInt(2, width-4);
+                    posY_fruit = randomInt(3, height-4);
+                    score = score+1;
+                    snake_body[score-1] = 1;
+                    renderSyrup();
                 }
             }
         }
@@ -122,7 +159,10 @@ int snake_move_auto(){
         direction_y = 0;
     }
 
-    printw("posX = %i, posY = %i", posX, posY);
+    printw("posX = %i, posY = %i\n", posX, posY);
+    printw("posX_fruit = %i, posY_fruit = %i\n", posX_fruit, posY_fruit);
+    printw("score = %i\n", score);
+
 }
 
 int snake_game(){
@@ -134,6 +174,8 @@ int snake_game(){
 
     posX = width / 2;
     posY = height / 2;
+    posX_fruit = width / 3;
+    posY_fruit = height / 3;
 
     while (game_running)
     {
@@ -144,7 +186,6 @@ int snake_game(){
         refresh();
         usleep(DELAY);
     }
-
 
     // getch();  //responsivevel por fechar o jogo ao clicar em CTRL+C
     

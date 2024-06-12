@@ -7,7 +7,7 @@
 
 //Dependecias: libncurses5-dev libncursesw5-dev;
 
-#define DELAY 1000000
+int DELAY = 400000;
 int width = 30;
 int height = 30;
 int posX = 0;
@@ -21,7 +21,7 @@ int game_closing = 0;
 int posX_fruit = 0;
 int posY_fruit = 0;
 int score = 0;
-int snake_body[10] = {};
+int snake_body[50] = {};
 
 void close_game(){
     game_running = 0;
@@ -69,7 +69,6 @@ void draw(){
 
                 for(int indexSnake = 0; indexSnake < lengthSnakeBody; indexSnake++){
                     if(snake_body[indexSnake] == 1){
-                        
                         if(direction_y == 1){
                             if(indexWidth == posX && indexHeight == posY-(indexSnake+1)){
                                 printw("|");
@@ -111,6 +110,12 @@ void draw(){
                     posY_fruit = randomInt(3, height-4);
                     score = score+1;
                     snake_body[score-1] = 1;
+
+                    int speed = score % 2;
+
+                    if(speed == 1){
+                        DELAY = DELAY - 100000;
+                    } 
                     renderSyrup();
                 }
             }
